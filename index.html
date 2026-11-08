@@ -1,490 +1,596 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VidStream - Galeri Video & Player</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>COCOLEMON - Galeri & Pemutar Video</title>
+  <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts untuk Logo Estetik -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,800;1,800&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+  <!-- Iklan Popunder (Terpanggil 1x untuk 1 pengunjung saat pertama kali buka) -->
+  <script data-cfasync="false" src="https://akconstructioncareerdays.org/1/585d14a1088579ccf27a4840dfa44967"></script>
   <style>
-    body {
-      background-color: #0b0f19;
+    /* Styling Logo Estetik Baru: Ukuran Seimbang & Teks Miring */
+    .brand-icon {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-weight: 700;
+      width: 42px;
+      height: 42px;
+      font-size: 1.6rem;
+      background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+      box-shadow: 0 6px 16px rgba(255, 126, 95, 0.7), inset 0 2px 3px rgba(255, 255, 255, 0.5);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px) scale(0.95); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+
+    .brand-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-style: italic; /* Teks nama dibuat miring */
+      font-size: 1.25rem; /* Ukuran disesuaikan agar seimbang dengan ikon C */
+      letter-spacing: 1px;
+      line-height: 1.1;
+      text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6); /* Bayangan teks lebih jelas dan tajam */
     }
-    .animate-fade-in {
-      animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+    /* Keyframe Animasi Getar 2 Detik untuk Iklan 3 */
+    @keyframes shakeAd {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      10% { transform: translate(-4px, -2px) rotate(-1deg); }
+      20% { transform: translate(4px, 2px) rotate(1deg); }
+      30% { transform: translate(-4px, 2px) rotate(0deg); }
+      40% { transform: translate(4px, -2px) rotate(1deg); }
+      50% { transform: translate(-2px, 2px) rotate(-1deg); }
+      60% { transform: translate(2px, -2px) rotate(0deg); }
+      70% { transform: translate(-4px, 0px) rotate(1deg); }
+      80% { transform: translate(4px, 2px) rotate(-1deg); }
+      90% { transform: translate(-2px, -2px) rotate(0deg); }
+    }
+
+    .animate-shake-2s {
+      animation: shakeAd 0.5s ease-in-out 4; /* 0.5s x 4 = 2 Detik Getar */
+    }
+
+    /* Scrollbar halus untuk kategori */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
   </style>
 </head>
-<body class="text-slate-100 min-h-screen font-sans antialiased selection:bg-indigo-500 selection:text-white">
+<body class="bg-gray-100 min-h-screen flex justify-center p-0 sm:p-4">
 
-  <!-- Header App Utama dengan Logo Dua Warna (Vid - Putih, Stream - Biru) -->
-  <header class="sticky top-0 z-40 bg-[#0b0f19]/90 backdrop-blur border-b border-slate-800/80 px-4 py-3 flex items-center justify-between shadow-lg">
-    <div class="flex items-center gap-2.5 cursor-pointer" onclick="goHome()">
-      <div class="bg-gradient-to-tr from-indigo-600 to-blue-500 p-2 rounded-xl shadow-md shadow-indigo-500/20">
-        <svg class="w-5 h-5 text-white fill-current" viewBox="0 0 24 24">
-          <path d="M8 5v14l11-7z"/>
-        </svg>
-      </div>
-      <span class="font-bold text-xl tracking-tight">
-        <span class="text-white">Vid</span><span class="text-blue-500">Stream</span>
-      </span>
-    </div>
-    <div class="flex items-center gap-2">
-      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-        HD Stream
-      </span>
-    </div>
-  </header>
-
-  <!-- Main Content Container -->
-  <main class="max-w-4xl mx-auto p-4 sm:p-6 pb-20">
-
-    <!-- VIEW 1: DASHBOARD KATALOG (GRID 2x3 & PAGINASI) -->
-    <section id="catalogView" class="space-y-5">
-      
-      <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 sm:p-5 shadow-xl space-y-3">
-        <div class="flex items-center gap-2.5">
-          <span class="text-xl">🎬</span>
-          <h2 class="text-xl font-bold text-white tracking-wide">Galeri Video</h2>
+  <!-- Container Utama HP / Tablet -->
+  <div class="w-full max-w-md bg-white min-h-screen sm:min-h-0 sm:rounded-2xl shadow-xl overflow-hidden flex flex-col">
+    
+    <!-- Header Navigasi dengan Logo Estetik Seimbang & Miring -->
+    <header class="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-100 sticky top-0 z-30">
+      <div class="flex items-center gap-2.5 cursor-pointer" onclick="showGallery()">
+        <div class="brand-icon shadow-md">
+          C
         </div>
-        <p class="text-xs sm:text-sm text-slate-400">Pilih video untuk diputar langsung.</p>
-        <div>
-          <span class="inline-block bg-slate-950/80 text-indigo-400 border border-slate-800 text-xs font-medium px-3 py-1 rounded-lg">
-            Total: 26 Video
-          </span>
+        <div class="flex flex-col">
+          <span class="brand-title text-orange-500 leading-tight">COCO<span class="text-gray-900">LEMON</span></span>
+          <span class="text-[9px] font-light tracking-widest text-gray-400 uppercase">Gallery</span>
         </div>
       </div>
+      <button id="btnBack" onclick="showGallery()" class="hidden bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold px-3 py-1.5 rounded-lg transition">
+        &larr; Kembali
+      </button>
+    </header>
 
-      <div class="flex items-center justify-between pt-2">
-        <h3 class="text-sm font-bold text-slate-300 flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
-          Katalog Pilihan
-        </h3>
-        <span id="pageIndicator" class="text-xs text-slate-400 bg-slate-900 px-3 py-1 rounded-full border border-slate-800"></span>
-      </div>
-
-      <!-- Grid 2x3 Katalog Video -->
-      <div id="videoGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4"></div>
-
-      <!-- Controls Paginasi Angka & Navigasi Sebelumnya/Selanjutnya -->
-      <div id="paginationContainer" class="flex flex-wrap justify-center items-center gap-2 pt-6"></div>
-    </section>
-
-    <!-- VIEW 2: PEMUTAR VIDEO (PLAYER EXASTREAM + IKLAN OVERLAY) -->
-    <section id="playerView" class="hidden space-y-4">
+    <!-- Halaman 1: Galeri Video -->
+    <div id="galleryPage" class="flex-1 flex flex-col p-4 space-y-4">
       
-      <div class="flex items-center justify-between">
-        <button onclick="goHome()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 transition text-sm font-medium shadow-md">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      <!-- Form Pencarian -->
+      <form onsubmit="handleSearch(event)" class="flex gap-2">
+        <div class="relative flex-1">
+          <input 
+            type="text" 
+            id="searchInput"
+            placeholder="Cari video favorit..." 
+            class="w-full pl-9 pr-8 py-2 bg-gray-100 rounded-xl text-sm border-none focus:outline-none focus:ring-2 focus:ring-orange-500"
+          />
+          <svg class="w-4 h-4 text-gray-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
           </svg>
-          Kembali ke Galeri
+          <button type="button" onclick="clearSearch()" class="hidden absolute right-2 top-2.5 text-gray-400 hover:text-gray-600 text-xs bg-gray-200 rounded-full w-4 h-4 flex items-center justify-center" id="btnClearSearch">&times;</button>
+        </div>
+        <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-4 py-2 rounded-xl text-sm shadow-md transition">
+          Cari
         </button>
+      </form>
+
+      <!-- Filter Kategori Horizontal -->
+      <div class="flex gap-2 overflow-x-auto no-scrollbar py-1" id="categoryContainer">
+        <!-- Kategori dirender via JS -->
       </div>
 
-      <!-- Container Pemutar Video 16:9 dengan Layer Overlay Iklan -->
-      <div class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-slate-800">
+      <!-- Grid Video 2x3 (6 Video per Halaman) -->
+      <div id="videoGrid" class="grid grid-cols-2 gap-3 flex-1">
+        <!-- Item Video dirender via JS -->
+      </div>
+
+      <!-- Navigasi Halaman (Pagination) -->
+      <div class="flex items-center justify-between pt-2 border-t border-gray-100 text-xs" id="paginationContainer">
+        <!-- Pagination dirender via JS -->
+      </div>
+    </div>
+
+    <!-- Halaman 2: Pemutar Video & Iklan Melayang -->
+    <div id="playerPage" class="hidden flex-1 flex-col">
+      
+      <!-- Wrapper Video Player -->
+      <div class="relative w-full aspect-[9/16] bg-black overflow-hidden shadow-inner flex items-center justify-center">
         
-        <iframe id="videoPlayer" class="w-full h-full border-0" allowfullscreen allow="autoplay"></iframe>
+        <!-- Video Utama -->
+        <video id="mainVideo" controls loop playsinline class="w-full h-full object-cover">
+          <source src="" type="video/mp4" />
+          Browser Anda tidak mendukung pemutar video HTML5.
+        </video>
 
-        <!-- TOMBOL ZOOM (Pojok Kanan Bawah Player - Memicu Smartlink) -->
-        <button onclick="triggerZoomAd()" class="absolute bottom-3 right-3 z-20 bg-black/70 hover:bg-black/90 text-white p-2 rounded-xl backdrop-blur border border-slate-700/60 shadow-lg transition flex items-center gap-1.5 text-xs font-semibold px-3">
-          <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
-          </svg>
-          <span>Zoom</span>
-        </button>
-
-        <!-- BACKDROP TRANSPARAN (Pemicu Smartlink) -->
-        <div id="adBackdrop" class="absolute inset-0 z-10 bg-transparent cursor-pointer hidden" onclick="triggerSmartlinkBackdrop()"></div>
-
-        <!-- IKLAN 1: Chat Box Overlay (Latar Belakang Putih, Dilengkapi Tombol X & Tutup yang Memicu Smartlink) -->
-        <div id="chatAd" class="absolute inset-x-4 top-1/2 -translate-y-1/2 z-20 hidden justify-center pointer-events-auto">
-          <div class="w-full max-w-xs bg-white text-slate-900 border border-slate-200 p-3 pb-8 rounded-2xl shadow-2xl backdrop-blur flex items-start gap-2.5 relative text-left transition animate-fade-in">
-            <!-- Area klik isi chat memicu smartlink -->
-            <a href="https://auctionr.org/4/24b55e3636d607271fdc76c2cd116ebe" target="_blank" onclick="handleAdClick('chatAd', 'chat')" class="flex items-start gap-2.5 flex-1 no-underline">
-              <div class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center text-base flex-shrink-0 shadow-md">💬</div>
-              <div class="chat-text flex-1 pr-2 text-slate-800"></div>
-            </a>
-            <!-- Tombol X Tambahan (Pojok Kanan Atas) Memicu Smartlink -->
-            <span onclick="closeChatWithSmartlink(event)" class="absolute top-2 right-2.5 w-5 h-5 rounded-full bg-red-500 hover:bg-red-600 text-white text-[10px] font-bold flex items-center justify-center cursor-pointer shadow transition z-40">×</span>
-            <!-- Tombol Tutup (Bawah Kanan) Memicu Smartlink -->
-            <span onclick="closeChatWithSmartlink(event)" class="absolute bottom-1.5 right-2.5 bg-red-500 hover:bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded cursor-pointer transition z-30 shadow">tutup</span>
+        <!-- IKLAN 1: Pesan Chat (Atas Video) -> Memicu Smartlink 2 -->
+        <a id="adChat" href="https://apiguinee.org/4/f48d1b3a91d0b1fd3db51c3c384a044b" target="_blank" onclick="handleAdClick(event, 1)" class="hidden absolute top-3 left-1/2 -translate-x-1/2 w-[92%] bg-white/95 backdrop-blur-md rounded-2xl p-2.5 flex items-center gap-2.5 shadow-lg z-20 transition-all duration-300 border border-white/40">
+          <div class="relative shrink-0">
+            <img id="adChatImg" src="" alt="Avatar Sponsor" class="w-10 h-10 rounded-full object-cover border border-orange-200" />
+            <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></span>
           </div>
-        </div>
+          <div class="flex-1 overflow-hidden pr-2">
+            <span class="text-[10px] font-bold text-orange-500 uppercase tracking-wider block leading-none mb-0.5">Pesan Sponsor</span>
+            <p id="adChatText" class="text-xs font-semibold text-gray-800 truncate">Halo kak! Tonton video full versi tanpa sensor sekarang...</p>
+          </div>
+          <button type="button" onclick="closeAd(event, 1)" class="text-gray-400 hover:text-gray-600 text-base font-bold px-1.5 py-0.5 rounded-full hover:bg-gray-100 shrink-0">&times;</button>
+        </a>
 
-        <!-- IKLAN 2: In-Page Push Video (Tombol X Siklus 1 & 2 Memicu Smartlink) -->
-        <div id="bannerAd" class="absolute right-12 top-[60%] -translate-y-1/2 z-30 hidden pointer-events-auto w-32 sm:w-40 bg-slate-900/95 border border-indigo-500/50 rounded-2xl overflow-hidden shadow-2xl backdrop-blur animate-fade-in animate-bounce">
-          <a href="https://auctionr.org/4/24b55e3636d607271fdc76c2cd116ebe" target="_blank" onclick="handleAdClick('bannerAd', 'banner')" class="block relative w-full aspect-square bg-black">
-            <video id="bannerVideo" class="w-full h-full object-cover pointer-events-none" autoplay muted loop playsinline></video>
-            <div class="absolute top-1.5 left-1.5 bg-black/70 backdrop-blur px-1.5 py-0.5 rounded text-[8px] font-bold text-indigo-400 border border-slate-700/50 flex items-center gap-1">
-              <span>🔔</span> Video
-            </div>
-            <!-- Tombol X (Siklus 1 & 2) Memicu Smartlink & Menutup Iklan -->
-            <span onclick="closeBannerWithSmartlink(event)" class="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-red-500 hover:bg-red-600 text-white text-[9px] font-bold flex items-center justify-center cursor-pointer shadow transition z-40">×</span>
-          </a>
-        </div>
+        <!-- IKLAN 3: In-Page Push Gambar (Kanan, Diperbesar & Digeser ke Bawah ke top-32) -> Memicu Smartlink 1 -->
+        <a id="adPushImg" href="https://auctionr.org/4/24b55e3636d607271fdc76c2cd116ebe" target="_blank" onclick="handleAdClick(event, 3)" class="hidden absolute top-32 right-3 w-56 bg-white rounded-xl overflow-hidden shadow-2xl z-20 border border-gray-100 transition-all duration-300">
+          <button type="button" onclick="closeAd(event, 3)" class="absolute top-1.5 right-1.5 w-5 h-5 bg-black/50 text-white rounded-full flex items-center justify-center text-xs font-bold z-30 hover:bg-black/70">&times;</button>
+          <span class="absolute top-1.5 left-1.5 bg-orange-500 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded uppercase tracking-wider z-20">ADS</span>
+          <img id="adImgSrc" src="" alt="Promo Banner" class="w-full h-36 object-cover" />
+          <div class="p-2 bg-white">
+            <p id="adImgTitle" class="text-xs font-bold text-gray-800 leading-snug line-clamp-2">Promo Viral Hari Ini! Klik Sekarang.</p>
+          </div>
+        </a>
+
+        <!-- IKLAN 2: In-Page Push Video (Kiri, Diperbesar & Digeser ke Atas ke bottom-12) -> Memicu Smartlink 1 -->
+        <a id="adPushVid" href="https://auctionr.org/4/24b55e3636d607271fdc76c2cd116ebe" target="_blank" onclick="handleAdClick(event, 2)" class="hidden absolute bottom-12 left-2 w-44 h-64 bg-black rounded-xl overflow-hidden shadow-2xl z-20 border border-white/20 transition-all duration-300">
+          <button type="button" onclick="closeAd(event, 2)" class="absolute top-1.5 right-1.5 w-5 h-5 bg-black/50 text-white rounded-full flex items-center justify-center text-xs font-bold z-30 hover:bg-black/70">&times;</button>
+          <span class="absolute top-1.5 left-1.5 bg-orange-500 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded uppercase tracking-wider z-20">SPONSORED</span>
+          <video id="adVidSrc" autoplay muted loop playsinline class="w-full h-full object-cover">
+            <source src="" type="video/mp4" />
+          </video>
+          <div class="absolute bottom-0 inset-x-0 p-2 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
+            <p id="adVidTitle" class="text-[10px] font-semibold text-white leading-tight">Klik tonton video push viral (Full HD)</p>
+          </div>
+        </a>
 
       </div>
 
-      <!-- Info Judul Video & Tombol Interaksi (Like, Share, Download) -->
-      <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl shadow-lg space-y-3">
-        <h1 id="videoTitle" class="text-base sm:text-lg font-bold text-blue-400 tracking-wide"></h1>
-        
-        <div class="flex items-center justify-between pt-2 border-t border-slate-800/80 text-xs">
-          <button onclick="toggleLike(this)" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 text-slate-300 transition border border-slate-700/50">
-            <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-            </svg>
-            <span id="likeCount">1.4K</span>
-          </button>
-
-          <button onclick="shareVideo()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 text-slate-300 transition border border-slate-700/50">
-            <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
-            </svg>
-            <span>Bagikan</span>
-          </button>
-
-          <button onclick="downloadVideo()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white transition shadow-md shadow-blue-600/30 font-semibold">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-            </svg>
-            <span>Unduh HD</span>
-          </button>
+      <!-- Detail Info Video yang Sedang Diputar -->
+      <div class="p-4 bg-white flex-1">
+        <h1 id="playerTitle" class="text-base font-bold text-gray-900 leading-snug">Judul Video</h1>
+        <div class="flex items-center justify-between mt-2">
+          <span id="playerCategory" class="text-xs font-semibold text-orange-500 bg-orange-50 px-2.5 py-1 rounded-full">Kategori</span>
+          <span id="playerViews" class="text-xs text-gray-500">0 x ditonton</span>
         </div>
       </div>
+    </div>
 
-      <!-- SECTION: REKOMENDASI VIDEO TERKAIT DI BAWAH PLAYER -->
-      <div class="space-y-3 pt-2">
-        <h3 class="text-sm font-bold text-slate-300 flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-          Video Terkait
-        </h3>
-        <div id="relatedVideosGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          <!-- Render via JavaScript -->
-        </div>
-      </div>
+  </div>
 
-    </section>
-
-  </main>
-
-  <!-- JavaScript Logika Web -->
   <script>
-    const SMARTLINK_URL = "https://auctionr.org/4/24b55e3636d607271fdc76c2cd116ebe";
-    const ITEMS_PER_PAGE = 6;
-    let currentPage = 1;
-    let currentVideo = null;
+    /* ==========================================================================
+       DATA SOURCE IKLAN & ROTASI (MENGGUNAKAN SMARTLINK & CDN VIDEY .MP4)
+       ========================================================================== */
+    const SMARTLINK_1 = "https://auctionr.org/4/24b55e3636d607271fdc76c2cd116ebe";
+    const SMARTLINK_2 = "https://apiguinee.org/4/f48d1b3a91d0b1fd3db51c3c384a044b";
 
-    let chatShowCount = 0;
-    let bannerShowCount = 0;
-    const maxShows = 2;
-    let adTimer = null;
+    const AD_DATA = {
+      ad1: [
+        { img: "https://i.ibb.co.com/N2W921ZS/d3f7c0b676a9dde5db9edaecd74f6c21.jpg", text: "Halo kak! Tonton video full versi tanpa sensor sekarang..." },
+        { img: "https://i.ibb.co.com/gZ39Bg9s/e58e5f3dbc23f2a42b07b9d7149312ed.jpg", text: "Ada video baru viral nih kak, pemersatu bangsa hot!" },
+        { img: "https://i.ibb.co.com/9H2RFtdp/193c6dad2b319045f013e74981d25f54.jpg", text: "Pesan khusus: Klik di sini tonton streaming HD gratis!" }
+      ],
+      ad2: [
+        { video: "https://cdn.videy.co/y8d13TDz1.mp4", text: "Klik tonton video push viral 1 (Full HD)" },
+        { video: "https://cdn.videy.co/BHZMU2YF1.mp4", text: "Streaming cepat video viral part 2 (Tanpa Jeda)" },
+        { video: "https://cdn.videy.co/TNEvMz2i1.mp4", text: "Aksi viral paling dicari minggu ini! Tonton sekarang" }
+      ],
+      ad3: [
+        { img: "https://i.ibb.co/jv92HCQf/90eee1789b9ed3143b1e795c29d18001.jpg", title: "Promo Spesial Hari Ini! Klik Langsung Nonton." },
+        { img: "https://i.ibb.co/BH7qxMLJ/HVevw-YMaw-AE68nn.jpg", title: "Jangan Sampai Kehabisan! Video Eksklusif HD." },
+        { img: "https://i.ibb.co/B2Rmzpg6/HWf-M3xzb-YAAyk-EB.jpg", title: "Koleksi Terbaru Hijab Viral Full Durasi!" }
+      ]
+    };
 
-    const videoDatabase = [
-      { id: 'v1', title: 'Gadis sma cantik', embedUrl: 'https://trbnvideo.live/e/CQcGvyVa', thumbUrl: 'https://i.ibb.co/S7sFtzXm/Screenshot-2026-1031-080400.png', views: '26.9K', duration: '8:47' },
-      { id: 'v2', title: 'Abg kesakitan smpe nangis', embedUrl: 'https://trbnvideo.live/e/SVXyR42j', thumbUrl: 'https://i.ibb.co/Gvfr6vtV/Screenshot-2026-1031-083941.png', views: '38.3K', duration: '4:28' },
-      { id: 'v3', title: 'Ahyon jilbab', embedUrl: 'https://trbnvideo.live/e/DtjKh9CG', thumbUrl: 'https://i.ibb.co.com/Tqvwkkd8/Screenshot-2026-1029-002208.png', views: '71.1K', duration: '4:27' },
-      { id: 'v4', title: 'nginep di kost pacar', embedUrl: 'https://trbnvideo.live/e/S4A8HsxX', thumbUrl: 'https://i.ibb.co.com/cKhW90v3/Screenshot-2026-1029-003252.png', views: '16.0K', duration: '7:28' },
-      { id: 'v5', title: 'Masih imut sekali', embedUrl: 'https://trbnvideo.live/e/SbPnn8mJ', thumbUrl: 'https://i.ibb.co.com/kV6RdTYQ/Screenshot-2026-1102-071629.png', views: '45.2K', duration: '5:12' },
-      { id: 'v6', title: 'Jilbab terbaik', embedUrl: 'https://trbnvideo.live/e/fPrR7yn3', thumbUrl: 'https://i.ibb.co/849wFLN4/Screenshot-2026-1102-111417.png', views: '89.4K', duration: '6:05' },
-      { id: 'v7', title: 'Perawat jilbab eksib di RS', embedUrl: 'https://trbnvideo.live/e/1uUygdYs', thumbUrl: 'https://i.ibb.co/mC5k4CJD/Screenshot-2026-1102-111649.png', views: '52.7K', duration: '9:15' },
-      { id: 'v8', title: 'tiktokers Notstarlaa', embedUrl: 'https://trbnvideo.live/e/U4TKi6yL', thumbUrl: 'https://i.ibb.co/ZzN1DYtf/Screenshot-2026-1101-063956.png', views: '63.1K', duration: '3:40' },
-      { id: 'v9', title: 'Abg toubrutt Notstarlaa', embedUrl: 'https://trbnvideo.live/e/DTB4wg6H', thumbUrl: 'https://i.ibb.co/8nqbvkwf/Screenshot-2026-1101-064037.png', views: '41.8K', duration: '5:50' },
-      { id: 'v10', title: 'Tiktokers Ica Cull', embedUrl: 'https://trbnvideo.live/e/CEiJ9GZY', thumbUrl: 'https://i.ibb.co/b5dBCm5C/Screenshot-2026-1101-064821.png', views: '33.9K', duration: '4:15' },
-      { id: 'v11', title: 'Salma Alea 1', embedUrl: 'https://trbnvideo.live/e/r3wMQMLS', thumbUrl: 'https://i.ibb.co/rRFCbcP9/Screenshot-2026-1101-064922.png', views: '98.0K', duration: '8:20' },
-      { id: 'v12', title: 'Salma Alea 2', embedUrl: 'https://trbnvideo.live/e/UCtEzsf4', thumbUrl: 'https://i.ibb.co/zTFgztVv/Screenshot-2026-1101-065114.png', views: '77.3K', duration: '6:45' },
-      { id: 'v13', title: 'Pakai terong Jumbo', embedUrl: 'https://trbnvideo.live/e/JOXi1E7J', thumbUrl: 'https://i.ibb.co/nM44DXGW/Screenshot-2026-1101-065149.png', views: '55.6K', duration: '7:10' },
-      { id: 'v14', title: 'Arachuu', embedUrl: 'https://trbnvideo.live/e/f8QBWMHt', thumbUrl: 'https://i.ibb.co/5xwn2gKB/Screenshot-2026-1101-072116.png', views: '104.2K', duration: '5:30' },
-      { id: 'v15', title: 'Bawa spg nginap di hotel', embedUrl: 'https://trbnvideo.live/e/Q8OTb3l0', thumbUrl: 'https://i.ibb.co/qYbbmQ6R/Screenshot-2026-1031-075743.png', views: '61.4K', duration: '10:12' },
-      { id: 'v16', title: 'Boking cewek cantik', embedUrl: 'https://trbnvideo.live/e/q1LeKbHe', thumbUrl: 'https://i.ibb.co/VWHyPXbj/Screenshot-2026-1031-075955.png', views: '82.9K', duration: '8:55' },
-      { id: 'v17', title: 'Goyangannya bikin gak tahan', embedUrl: 'https://trbnvideo.live/e/W5K2ggG1', thumbUrl: 'https://i.ibb.co.com/GmnYvhX/Screenshot-2026-1029-003737.png', views: '49.8K', duration: '4:50' },
-      { id: 'v18', title: 'Sepupu toubrutt', embedUrl: 'https://trbnvideo.live/e/k8NrIjie', thumbUrl: 'https://i.ibb.co.com/LzN5Pw3L/Screenshot-2026-1028-235223.png', views: '37.1K', duration: '6:20' },
-      { id: 'v19', title: 'Minta dibeliin iphone', embedUrl: 'https://trbnvideo.live/e/E6yudbMs', thumbUrl: 'https://i.ibb.co.com/S433n7H2/Screenshot-2026-1029-001612.png', views: '28.5K', duration: '5:05' },
-      { id: 'v20', title: 'jilbab toubrutt', embedUrl: 'https://trbnvideo.live/e/08SNgxe9', thumbUrl: 'https://i.ibb.co.com/3VGdCJ8/Screenshot-2026-1029-001858.png', views: '91.0K', duration: '7:40' },
-      { id: 'v21', title: 'Gina jilboob', embedUrl: 'https://trbnvideo.live/e/F51NRzNP', thumbUrl: 'https://i.ibb.co/NnKs0Hnd/images-4.jpg', views: '68.4K', duration: '6:15' },
-      { id: 'v22', title: 'Gina Hijaber toge binal', embedUrl: 'https://trbnvideo.live/e/H6jg5ztO', thumbUrl: 'https://i.ibb.co/gZ3QjTdD/images-1.jpg', views: '84.2K', duration: '9:00' },
-      { id: 'v23', title: 'Malu tapi menikmati', embedUrl: 'https://trbnvideo.live/e/GSBw9P3Q', thumbUrl: 'https://i.ibb.co/mVGSn03K/Screenshot-2026-1031-072703.png', views: '53.9K', duration: '5:48' },
-      { id: 'v24', title: 'Jilbab mendesah dapet batang gede', embedUrl: 'https://trbnvideo.live/e/NTgAYglk', thumbUrl: 'https://i.ibb.co/Kp6q01J2/Screenshot-2026-1031-072954.png', views: '112.5K', duration: '11:02' },
-      { id: 'v25', title: 'Jilbab coklat binal', embedUrl: 'https://trbnvideo.live/e/a03aWEYS', thumbUrl: 'https://i.ibb.co/tMPDkKmj/Screenshot-2026-1031-073143.png', views: '47.3K', duration: '6:30' },
-      { id: 'v26', title: 'Cantik & mulus', embedUrl: 'https://trbnvideo.live/e/XXvnStXb', thumbUrl: 'https://i.ibb.co/LdLFpdL8/Screenshot-2026-1031-084559.png', views: '79.1K', duration: '8:14' }
+    /* Database 36 Video Lengkap */
+    const VIDEOS_DATABASE = [
+      { id: 1, title: "Abg sama pacar saat rumah sepi", category: "Viral", views: "145K", duration: "02:15", thumb: "https://i.ibb.co.com/ccRn2Gvv/Screenshot-2026-1104-163113.png", src: "https://assets.mixkit.co/videos/preview/mixkit-vertical-shot-of-a-woman-smiling-at-the-camera-40660-large.mp4" },
+      { id: 2, title: "Abg di wc umum", category: "Viral", views: "230K", duration: "03:40", thumb: "https://i.ibb.co.com/v42DcfTz/Screenshot-2026-1104-163448.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 3, title: "Abg jilbab keluar didalam", category: "Hijab", views: "89K", duration: "01:50", thumb: "https://i.ibb.co.com/YT7FGMYp/Screenshot-2026-1104-165008.png", src: "https://assets.mixkit.co/videos/preview/mixkit-vertical-shot-of-a-woman-smiling-at-the-camera-40660-large.mp4" },
+      { id: 4, title: "Abg main di kebun", category: "Viral", views: "512K", duration: "04:10", thumb: "https://i.ibb.co.com/DfMwDWY3/Screenshot-2026-1104-164926.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 5, title: "jilbab toubrutt", category: "Hijab", views: "98K", duration: "02:30", thumb: "https://i.ibb.co.com/3VGdCJ8/Screenshot-2026-1029-001858.png", src: "https://assets.mixkit.co/videos/preview/mixkit-vertical-shot-of-a-woman-smiling-at-the-camera-40660-large.mp4" },
+      { id: 6, title: "hijab cantik lagi sange", category: "Hijab", views: "340K", duration: "05:00", thumb: "https://i.ibb.co.com/h1YMhN93/Screenshot-2026-1107-164355.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 7, title: "Rahma hijab", category: "Hijab", views: "76K", duration: "01:25", thumb: "https://i.ibb.co.com/JwFkSJYz/Screenshot-2026-1107-190008.png", src: "https://assets.mixkit.co/videos/preview/mixkit-vertical-shot-of-a-woman-smiling-at-the-camera-40660-large.mp4" },
+      { id: 8, title: "Rahma hijab kena dogi", category: "Hijab", views: "410K", duration: "03:15", thumb: "https://i.ibb.co.com/8LWwSNSj/Screenshot-2026-1107-190413.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 9, title: "salwa tiktok", category: "Populer", views: "190K", duration: "02:45", thumb: "https://i.ibb.co.com/3YMQPv9L/Screenshot-2026-1107-190719.png", src: "https://assets.mixkit.co/videos/preview/mixkit-vertical-shot-of-a-woman-smiling-at-the-camera-40660-large.mp4" },
+      { id: 10, title: "Abg SMA pulang sekolah", category: "Viral", views: "65K", duration: "04:30", thumb: "https://i.ibb.co.com/Wpxh9bY9/Screenshot-2026-1104-164230.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 11, title: "Mantan ngajak ketemuan", category: "Viral", views: "305K", duration: "02:10", thumb: "https://i.ibb.co.com/QFw51xdX/Screenshot-2026-1104-163016.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 12, title: "Gina jilboob", category: "Hijab", views: "820K", duration: "06:12", thumb: "https://i.ibb.co/NnKs0Hnd/images-4.jpg", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 13, title: "Gina Hijaber toge binal", category: "Hijab", views: "112K", duration: "03:00", thumb: "https://i.ibb.co/gZ3QjTdD/images-1.jpg", src: "https://assets.mixkit.co/videos/preview/mixkit-vertical-shot-of-a-woman-smiling-at-the-camera-40660-large.mp4" },
+      { id: 14, title: "Malu tapi menikmati", category: "Viral", views: "95K", duration: "02:20", thumb: "https://i.ibb.co/mVGSn03K/Screenshot-2026-1031-072703.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 15, title: "Jilbab mendesah dapet batang gede", category: "Hijab", views: "215K", duration: "04:05", thumb: "https://i.ibb.co/Kp6q01J2/Screenshot-2026-1031-072954.png", src: "https://assets.mixkit.co/videos/preview/mixkit-vertical-shot-of-a-woman-smiling-at-the-camera-40660-large.mp4" },
+      { id: 16, title: "Jilbab coklat binal", category: "Hijab", views: "180K", duration: "03:30", thumb: "https://i.ibb.co/tMPDkKmj/Screenshot-2026-1031-073143.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 17, title: "Cantik & mulus", category: "Populer", views: "320K", duration: "05:10", thumb: "https://i.ibb.co/LdLFpdL8/Screenshot-2026-1031-084559.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 18, title: "Gadis sma cantik", category: "Viral", views: "410K", duration: "02:50", thumb: "https://i.ibb.co/S7sFtzXm/Screenshot-2026-1031-080400.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 19, title: "Abg kesakitan smpe nangis", category: "Viral", views: "530K", duration: "04:45", thumb: "https://i.ibb.co/Gvfr6vtV/Screenshot-2026-1031-083941.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 20, title: "Ahyon jilbab", category: "Hijab", views: "88K", duration: "01:45", thumb: "https://i.ibb.co.com/Tqvwkkd8/Screenshot-2026-1029-002208.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 21, title: "nginep di kost pacar", category: "Viral", views: "275K", duration: "03:55", thumb: "https://i.ibb.co.com/cKhW90v3/Screenshot-2026-1029-003252.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 22, title: "Masih imut sekali", category: "Populer", views: "160K", duration: "02:25", thumb: "https://i.ibb.co.com/kV6RdTYQ/Screenshot-2026-1102-071629.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 23, title: "Jilbab terbaik", category: "Hijab", views: "290K", duration: "04:15", thumb: "https://i.ibb.co/849wFLN4/Screenshot-2026-1102-111417.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 24, title: "Perawat jilbab eksib di RS", category: "Hijab", views: "380K", duration: "03:20", thumb: "https://i.ibb.co/mC5k4CJD/Screenshot-2026-1102-111649.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 25, title: "tiktokers Notstarlaa", category: "Populer", views: "450K", duration: "01:30", thumb: "https://i.ibb.co/ZzN1DYtf/Screenshot-2026-1101-063956.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 26, title: "Abg toubrutt Notstarlaa", category: "Populer", views: "510K", duration: "02:40", thumb: "https://i.ibb.co/8nqbvkwf/Screenshot-2026-1101-064037.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 27, title: "Tiktokers Ica Cull", category: "Populer", views: "220K", duration: "02:00", thumb: "https://i.ibb.co/b5dBCm5C/Screenshot-2026-1101-064821.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 28, title: "Salma Alea 1", category: "Populer", views: "340K", duration: "03:10", thumb: "https://i.ibb.co/rRFCbcP9/Screenshot-2026-1101-064922.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 29, title: "Salma Alea 2", category: "Populer", views: "390K", duration: "03:45", thumb: "https://i.ibb.co/zTFgztVv/Screenshot-2026-1101-065114.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 30, title: "Pakai terong Jumbo", category: "Viral", views: "620K", duration: "05:20", thumb: "https://i.ibb.co/nM44DXGW/Screenshot-2026-1101-065149.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 31, title: "Arachuu", category: "Populer", views: "890K", duration: "02:15", thumb: "https://i.ibb.co/5xwn2gKB/Screenshot-2026-1101-072116.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 32, title: "Bawa spg nginap di hotel", category: "Viral", views: "310K", duration: "04:50", thumb: "https://i.ibb.co/qYbbmQ6R/Screenshot-2026-1031-075743.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 33, title: "Boking cewek cantik", category: "Viral", views: "280K", duration: "03:35", thumb: "https://i.ibb.co/VWHyPXbj/Screenshot-2026-1031-075955.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 34, title: "Goyangannya bikin gak tahan", category: "Viral", views: "430K", duration: "03:05", thumb: "https://i.ibb.co.com/GmnYvhX/Screenshot-2026-1029-003737.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 35, title: "Sepupu toubrutt", category: "Hijab", views: "360K", duration: "02:55", thumb: "https://i.ibb.co.com/LzN5Pw3L/Screenshot-2026-1028-235223.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" },
+      { id: 36, title: "Minta dibeliin iphone", category: "Viral", views: "295K", duration: "03:15", thumb: "https://i.ibb.co.com/S433n7H2/Screenshot-2026-1029-001612.png", src: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-smiling-towards-camera-40659-large.mp4" }
     ];
 
-    function renderCatalog() {
-      const grid = document.getElementById('videoGrid');
-      grid.innerHTML = '';
+    /* State Aplikasi */
+    let currentCategory = "Semua";
+    let searchQuery = "";
+    let currentPage = 1;
+    const itemsPerPage = 6;
 
-      const totalPages = Math.ceil(videoDatabase.length / ITEMS_PER_PAGE);
-      const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-      const paginatedVideos = videoDatabase.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    /* State Iklan Independen (Maksimal 3 Siklus) */
+    let adState = {
+      1: { timer: null, cycle: 0 },
+      2: { timer: null, cycle: 0 },
+      3: { timer: null, cycle: 0 }
+    };
+    let initialAdTimelineTimers = [];
 
-      paginatedVideos.forEach(v => {
-        const card = document.createElement('div');
-        card.className = "group relative bg-slate-900/90 border border-slate-800 rounded-2xl overflow-hidden cursor-pointer hover:border-indigo-500/50 transition flex flex-col shadow-xl";
-        card.onclick = () => selectVideo(v.id);
+    /* ==========================================================================
+       MANAJEMEN GALERI & RENDERING
+       ========================================================================== */
+    const categories = ["Semua", "Hijab", "Viral", "Populer"];
 
-        card.innerHTML = `
-          <div class="relative w-full aspect-video bg-slate-950 overflow-hidden">
-            <img src="${v.thumbUrl}" alt="${v.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-            <div class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition">
-              <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-600/40 group-hover:scale-110 transition">
-                <svg class="w-5 h-5 fill-current ml-0.5" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-              </div>
-            </div>
-            <span class="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow">${v.duration}</span>
-          </div>
-          <div class="p-3 flex-1 flex flex-col justify-between space-y-2">
-            <h3 class="text-xs font-semibold text-blue-400 group-hover:text-blue-300 transition line-clamp-2 leading-snug">${v.title}</h3>
-            <div class="flex items-center justify-between text-[11px] pt-1">
-              <span class="text-slate-400 flex items-center gap-1">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                ${v.views}
-              </span>
-              <span class="text-blue-400 font-semibold group-hover:underline flex items-center">Tonton &gt;</span>
-            </div>
+    function initGallery() {
+      renderCategories();
+      renderVideoGrid();
+    }
+
+    function renderCategories() {
+      const container = document.getElementById("categoryContainer");
+      container.innerHTML = categories.map(cat => `
+        <button 
+          onclick="setCategory('${cat}')"
+          class="px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
+            currentCategory === cat 
+              ? 'bg-orange-500 text-white shadow-md' 
+              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+          }"
+        >
+          ${cat}
+        </button>
+      `).join('');
+    }
+
+    function setCategory(cat) {
+      currentCategory = cat;
+      currentPage = 1;
+      renderCategories();
+      renderVideoGrid();
+    }
+
+    function handleSearch(e) {
+      e.preventDefault();
+      searchQuery = document.getElementById("searchInput").value.trim();
+      currentPage = 1;
+      toggleClearSearchBtn();
+      renderVideoGrid();
+    }
+
+    function clearSearch() {
+      document.getElementById("searchInput").value = "";
+      searchQuery = "";
+      currentPage = 1;
+      toggleClearSearchBtn();
+      renderVideoGrid();
+    }
+
+    function toggleClearSearchBtn() {
+      const btn = document.getElementById("btnClearSearch");
+      if (searchQuery.length > 0) {
+        btn.classList.remove("hidden");
+      } else {
+        btn.classList.add("hidden");
+      }
+    }
+
+    function getFilteredVideos() {
+      return VIDEOS_DATABASE.filter(vid => {
+        const matchCategory = currentCategory === "Semua" || vid.category === currentCategory;
+        const matchSearch = vid.title.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchCategory && matchSearch;
+      });
+    }
+
+    function renderVideoGrid() {
+      const filtered = getFilteredVideos();
+      const grid = document.getElementById("videoGrid");
+      const pagination = document.getElementById("paginationContainer");
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-2 py-12 text-center text-gray-400">
+            <p class="text-sm">Video tidak ditemukan.</p>
           </div>
         `;
-        grid.appendChild(card);
-      });
-
-      document.getElementById('pageIndicator').textContent = `Hal ${currentPage} dari ${totalPages}`;
-      renderPagination(totalPages);
-    }
-
-    function renderPagination(totalPages) {
-      const container = document.getElementById('paginationContainer');
-      container.innerHTML = '';
-
-      const prevBtn = document.createElement('button');
-      prevBtn.innerHTML = '&larr; Sebelumnya';
-      prevBtn.className = `px-3 py-1.5 rounded-lg font-bold text-xs transition border flex items-center gap-1 ${
-        currentPage === 1 ? 'bg-slate-900 border-slate-800 text-slate-600 cursor-not-allowed' : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800 hover:text-white'
-      }`;
-      prevBtn.disabled = currentPage === 1;
-      prevBtn.onclick = () => { if (currentPage > 1) { currentPage--; renderCatalog(); window.scrollTo({ top: 0, behavior: 'smooth' }); } };
-      container.appendChild(prevBtn);
-
-      for (let i = 1; i <= totalPages; i++) {
-        const btn = document.createElement('button');
-        btn.textContent = i;
-        btn.className = `w-8 h-8 rounded-lg font-bold text-xs transition border ${
-          i === currentPage ? 'bg-blue-600 border-blue-500 text-white shadow-md' : 'bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-800 hover:text-white'
-        }`;
-        btn.onclick = () => { currentPage = i; renderCatalog(); window.scrollTo({ top: 0, behavior: 'smooth' }); };
-        container.appendChild(btn);
+        pagination.innerHTML = "";
+        return;
       }
 
-      const nextBtn = document.createElement('button');
-      nextBtn.innerHTML = 'Selanjutnya &rarr;';
-      nextBtn.className = `px-3 py-1.5 rounded-lg font-bold text-xs transition border flex items-center gap-1 ${
-        currentPage === totalPages ? 'bg-slate-900 border-slate-800 text-slate-600 cursor-not-allowed' : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800 hover:text-white'
-      }`;
-      nextBtn.disabled = currentPage === totalPages;
-      nextBtn.onclick = () => { if (currentPage < totalPages) { currentPage++; renderCatalog(); window.scrollTo({ top: 0, behavior: 'smooth' }); } };
-      container.appendChild(nextBtn);
-    }
+      const totalPages = Math.ceil(filtered.length / itemsPerPage);
+      if (currentPage > totalPages) currentPage = totalPages;
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const paginatedVideos = filtered.slice(startIndex, startIndex + itemsPerPage);
 
-    function renderRelatedVideos(currentVideoId) {
-      const relatedGrid = document.getElementById('relatedVideosGrid');
-      relatedGrid.innerHTML = '';
-
-      const filtered = videoDatabase.filter(v => v.id !== currentVideoId);
-      const shuffled = filtered.sort(() => 0.5 - Math.random()).slice(0, 6);
-
-      shuffled.forEach(v => {
-        const card = document.createElement('div');
-        card.className = "group relative bg-slate-900/90 border border-slate-800 rounded-2xl overflow-hidden cursor-pointer hover:border-indigo-500/50 transition flex flex-col shadow-xl";
-        card.onclick = () => selectVideo(v.id);
-
-        card.innerHTML = `
-          <div class="relative w-full aspect-video bg-slate-950 overflow-hidden">
-            <img src="${v.thumbUrl}" alt="${v.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-            <div class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition">
-              <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-600/40 group-hover:scale-110 transition">
-                <svg class="w-4 h-4 fill-current ml-0.5" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-              </div>
-            </div>
-            <span class="absolute bottom-1.5 right-1.5 bg-black/80 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow">${v.duration}</span>
-          </div>
-          <div class="p-2.5 flex-1 flex flex-col justify-between space-y-1">
-            <h3 class="text-xs font-semibold text-blue-400 group-hover:text-blue-300 transition line-clamp-2 leading-snug">${v.title}</h3>
-            <span class="text-slate-400 text-[10px] flex items-center gap-1">
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-              ${v.views}
+      grid.innerHTML = paginatedVideos.map(vid => `
+        <div onclick="handleVideoClick(${vid.id})" class="group cursor-pointer bg-gray-50 rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition">
+          <div class="relative aspect-[3/4] bg-gray-200 overflow-hidden">
+            <img src="${vid.thumb}" alt="${vid.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+            <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition"></div>
+            <span class="absolute bottom-2 right-2 bg-black/75 text-white text-[10px] font-medium px-1.5 py-0.5 rounded backdrop-blur-sm">
+              ${vid.duration}
             </span>
+            <div class="absolute inset-0 flex items-center justify-center opacity-80 group-hover:opacity-100 group-hover:scale-110 transition">
+              <div class="w-10 h-10 bg-orange-500/90 text-white rounded-full flex items-center justify-center shadow-lg pl-0.5">
+                &#9654;
+              </div>
+            </div>
           </div>
+          <div class="p-2">
+            <h3 class="text-xs font-bold text-gray-800 line-clamp-2 leading-snug">${vid.title}</h3>
+            <div class="flex items-center justify-between mt-1 text-[10px] text-gray-500">
+              <span class="text-orange-500 font-medium">${vid.category}</span>
+              <span>${vid.views}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      /* Logika Rentang Nomor Halaman Dinamis (Max 4 Tombol Angka Bergeser, misal: 3 4 5 6) */
+      let startPage = Math.max(1, currentPage - 1);
+      let endPage = startPage + 3;
+      if (endPage > totalPages) {
+        endPage = totalPages;
+        startPage = Math.max(1, endPage - 3);
+      }
+
+      let pageButtonsHTML = '';
+      for (let i = startPage; i <= endPage; i++) {
+        pageButtonsHTML += `
+          <button 
+            onclick="goToPage(${i})"
+            class="w-7 h-7 rounded-lg text-xs font-bold transition ${
+              currentPage === i 
+                ? 'bg-orange-500 text-white shadow-sm' 
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }"
+          >
+            ${i}
+          </button>
         `;
-        relatedGrid.appendChild(card);
+      }
+
+      pagination.innerHTML = `
+        <button 
+          onclick="goToPage(${currentPage - 1})"
+          ${currentPage === 1 ? 'disabled class="opacity-40 cursor-not-allowed text-xs text-gray-400 font-semibold px-1 py-1"' : 'class="text-xs text-gray-700 font-semibold hover:text-orange-500 px-1 py-1"'}
+        >
+          &larr; Prev
+        </button>
+        <div class="flex gap-1">${pageButtonsHTML}</div>
+        <button 
+          onclick="goToPage(${currentPage + 1})"
+          ${currentPage === totalPages ? 'disabled class="opacity-40 cursor-not-allowed text-xs text-gray-400 font-semibold px-1 py-1"' : 'class="text-xs text-gray-700 font-semibold hover:text-orange-500 px-1 py-1"'}
+        >
+          Next &rarr;
+        </button>
+      `;
+    }
+
+    function goToPage(page) {
+      currentPage = page;
+      renderVideoGrid();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ==========================================================================
+       PEMUTAR VIDEO & SISTEM LOGIKA IKLAN INDEPENDEN
+       ========================================================================== */
+    function handleVideoClick(id) {
+      window.open(SMARTLINK_1, '_blank');
+      playVideo(id);
+    }
+
+    function playVideo(id) {
+      const vid = VIDEOS_DATABASE.find(v => v.id === id);
+      if (!vid) return;
+
+      document.getElementById("galleryPage").classList.add("hidden");
+      document.getElementById("playerPage").classList.remove("hidden");
+      document.getElementById("playerPage").classList.add("flex");
+      document.getElementById("btnBack").classList.remove("hidden");
+
+      document.getElementById("playerTitle").innerText = vid.title;
+      document.getElementById("playerCategory").innerText = vid.category;
+      document.getElementById("playerViews").innerText = vid.views + " x ditonton";
+
+      const mainVid = document.getElementById("mainVideo");
+      mainVid.src = vid.src;
+      mainVid.play();
+
+      startAdSequence();
+    }
+
+    function showGallery() {
+      const mainVid = document.getElementById("mainVideo");
+      mainVid.pause();
+
+      const adVidElem = document.getElementById("adVidSrc");
+      adVidElem.pause();
+
+      clearAllAdTimers();
+      hideAd(1);
+      hideAd(2);
+      hideAd(3);
+
+      document.getElementById("playerPage").classList.add("hidden");
+      document.getElementById("playerPage").classList.remove("flex");
+      document.getElementById("galleryPage").classList.remove("hidden");
+      document.getElementById("btnBack").classList.add("hidden");
+    }
+
+    function clearAllAdTimers() {
+      initialAdTimelineTimers.forEach(t => clearTimeout(t));
+      initialAdTimelineTimers = [];
+      [1, 2, 3].forEach(id => {
+        if (adState[id].timer) clearTimeout(adState[id].timer);
+        adState[id].timer = null;
+        adState[id].cycle = 0;
       });
     }
 
-    function selectVideo(videoId) {
-      window.open(SMARTLINK_URL, '_blank');
-      const video = videoDatabase.find(v => v.id === videoId);
-      if (!video) return;
+    function startAdSequence() {
+      clearAllAdTimers();
 
-      currentVideo = video;
-      document.getElementById('videoTitle').textContent = video.title;
-      document.getElementById('videoPlayer').src = video.embedUrl;
+      // T = 10 Detik -> Iklan 1
+      initialAdTimelineTimers.push(setTimeout(() => {
+        triggerAdSpawn(1);
+      }, 10000));
 
-      document.getElementById('catalogView').classList.add('hidden');
-      document.getElementById('playerView').classList.remove('hidden');
+      // T = 11 Detik -> Iklan 2
+      initialAdTimelineTimers.push(setTimeout(() => {
+        triggerAdSpawn(2);
+      }, 11000));
 
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      renderRelatedVideos(video.id);
-      resetAndStartAdSystem();
+      // T = 12 Detik -> Iklan 3
+      initialAdTimelineTimers.push(setTimeout(() => {
+        triggerAdSpawn(3);
+      }, 12000));
     }
 
-    function goHome() {
-      document.getElementById('playerView').classList.add('hidden');
-      document.getElementById('catalogView').classList.remove('hidden');
-      document.getElementById('videoPlayer').src = '';
-      clearTimeout(adTimer);
-      hideAllAds();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    function getRandomItem(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
     }
 
-    function resetAndStartAdSystem() {
-      chatShowCount = 0;
-      bannerShowCount = 0;
-      hideAllAds();
-      scheduleNextAdCycle();
-    }
+    function triggerAdSpawn(adId) {
+      if (adState[adId].cycle >= 3) return;
 
-    function hideAllAds() {
-      document.getElementById('chatAd').style.display = 'none';
-      document.getElementById('bannerAd').style.display = 'none';
-      document.getElementById('adBackdrop').classList.add('hidden');
-    }
+      if (adId === 1) {
+        const data = getRandomItem(AD_DATA.ad1);
+        document.getElementById("adChatImg").src = data.img;
+        document.getElementById("adChatText").innerText = data.text;
+        document.getElementById("adChat").href = SMARTLINK_2;
+        showAd(1);
+      } 
+      else if (adId === 2) {
+        const data = getRandomItem(AD_DATA.ad2);
+        const vidElem = document.getElementById("adVidSrc");
+        
+        vidElem.src = data.video;
+        vidElem.muted = true;
+        vidElem.load();
+        
+        vidElem.play().catch(err => {
+          console.log("Autoplay dicegah browser:", err);
+        });
 
-    function scheduleNextAdCycle() {
-      if (chatShowCount < maxShows || bannerShowCount < maxShows) {
-        clearTimeout(adTimer);
-        adTimer = setTimeout(() => { showAdCycle(); }, 5000);
+        document.getElementById("adVidTitle").innerText = data.text;
+        document.getElementById("adPushVid").href = SMARTLINK_1;
+        showAd(2);
+      } 
+      else if (adId === 3) {
+        const data = getRandomItem(AD_DATA.ad3);
+        document.getElementById("adImgSrc").src = data.img;
+        document.getElementById("adImgTitle").innerText = data.title;
+        document.getElementById("adPushImg").href = SMARTLINK_1;
+        
+        const ad3Container = document.getElementById("adPushImg");
+        ad3Container.classList.remove("animate-shake-2s");
+        void ad3Container.offsetWidth; 
+        ad3Container.classList.add("animate-shake-2s");
+        
+        showAd(3);
       }
     }
 
-    function showAdCycle() {
-      document.getElementById('adBackdrop').classList.remove('hidden');
-
-      if (chatShowCount < maxShows) {
-        const chatTextElement = document.querySelector('#chatAd .chat-text');
-        if (chatShowCount === 0) {
-          chatTextElement.innerHTML = `
-            <strong class="text-blue-600 font-bold block text-[11px] mb-0.5">Pesan Baru</strong>
-            <p class="text-slate-700 text-[11px] leading-snug break-words">Seseorang mengirimkan foto/video khusus untukmu! Klik untuk melihat sekarang.</p>
-          `;
-        } else {
-          chatTextElement.innerHTML = `
-            <strong class="text-blue-600 font-bold block text-[11px] mb-0.5">Pesan Baru (1)</strong>
-            <p class="text-slate-700 text-[11px] leading-snug break-words">Pesan belum dibaca: Link akses video penuh hampir kadaluarsa! Klik di sini.</p>
-          `;
-        }
-        document.getElementById('chatAd').style.display = 'flex';
+    function showAd(adId) {
+      const elMap = { 1: "adChat", 2: "adPushVid", 3: "adPushImg" };
+      const el = document.getElementById(elMap[adId]);
+      if (el && adState[adId].cycle < 3) {
+        el.classList.remove("hidden");
       }
-
-      setTimeout(() => {
-        if (bannerShowCount < maxShows) {
-          const bannerVideoElement = document.getElementById('bannerVideo');
-          bannerVideoElement.src = bannerShowCount === 0 ? 'https://cdn.videy.co/ZQdLatS51.mp4' : 'https://cdn.videy.co/ENOlSaoU1.mp4';
-          bannerVideoElement.play();
-          document.getElementById('bannerAd').style.display = 'block';
-        }
-      }, 500);
     }
 
-    function handleAdClick(adId, adType) {
-      if (adType === 'chat') chatShowCount++;
-      if (adType === 'banner') bannerShowCount++;
-      document.getElementById(adId).style.display = 'none';
-      checkAllAdsClosed();
-    }
-
-    function closeAd(event, adId, adType) {
-      event.preventDefault();
-      event.stopPropagation();
-      if (adType === 'chat') chatShowCount++;
-      if (adType === 'banner') bannerShowCount++;
-      document.getElementById(adId).style.display = 'none';
-      checkAllAdsClosed();
-    }
-
-    // Fungsi khusus penutup Iklan 1 (Chat Box) yang memicu Smartlink
-    function closeChatWithSmartlink(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      window.open(SMARTLINK_URL, '_blank');
-      chatShowCount++;
-      document.getElementById('chatAd').style.display = 'none';
-      checkAllAdsClosed();
-    }
-
-    // Fungsi khusus penutup Iklan 2 (In-Page Push) yang memicu Smartlink
-    function closeBannerWithSmartlink(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      window.open(SMARTLINK_URL, '_blank');
-      bannerShowCount++;
-      document.getElementById('bannerAd').style.display = 'none';
-      checkAllAdsClosed();
-    }
-
-    function triggerSmartlinkBackdrop() {
-      window.open(SMARTLINK_URL, '_blank');
-      hideAllAds();
-      chatShowCount++;
-      bannerShowCount++;
-      checkAllAdsClosed();
-    }
-
-    function triggerZoomAd() {
-      window.open(SMARTLINK_URL, '_blank');
-    }
-
-    function checkAllAdsClosed() {
-      if (document.getElementById('chatAd').style.display === 'none' && document.getElementById('bannerAd').style.display === 'none') {
-        document.getElementById('adBackdrop').classList.add('hidden');
-        if (chatShowCount < maxShows || bannerShowCount < maxShows) {
-          scheduleNextAdCycle();
+    function hideAd(adId) {
+      const elMap = { 1: "adChat", 2: "adPushVid", 3: "adPushImg" };
+      const el = document.getElementById(elMap[adId]);
+      if (el) {
+        el.classList.add("hidden");
+        if (adId === 2) {
+          const vidElem = document.getElementById("adVidSrc");
+          vidElem.pause();
         }
       }
     }
 
-    let isLiked = false;
-    function toggleLike(btn) {
-      isLiked = !isLiked;
-      const svgIcon = btn.querySelector('svg');
-      const countSpan = document.getElementById('likeCount');
-      if (isLiked) {
-        svgIcon.setAttribute('fill', 'currentColor');
-        btn.classList.add('text-red-400', 'border-red-500/40');
-        countSpan.textContent = '1.5K';
-      } else {
-        svgIcon.setAttribute('fill', 'none');
-        btn.classList.remove('text-red-400', 'border-red-500/40');
-        countSpan.textContent = '1.4K';
+    function closeAd(event, adId) {
+      event.preventDefault();
+      event.stopPropagation();
+      
+      const targetLink = (adId === 1) ? SMARTLINK_2 : SMARTLINK_1;
+      window.open(targetLink, '_blank');
+
+      dismissAndScheduleRespawn(adId);
+    }
+
+    function handleAdClick(event, adId) {
+      dismissAndScheduleRespawn(adId);
+    }
+
+    function dismissAndScheduleRespawn(adId) {
+      hideAd(adId);
+      
+      adState[adId].cycle++;
+      
+      if (adState[adId].cycle < 3) {
+        if (adState[adId].timer) clearTimeout(adState[adId].timer);
+
+        adState[adId].timer = setTimeout(() => {
+          triggerAdSpawn(adId);
+        }, 5000);
       }
     }
 
-    function shareVideo() {
-      if (navigator.share) {
-        navigator.share({ title: document.getElementById('videoTitle').textContent, url: window.location.href }).catch(() => {});
-      } else {
-        navigator.clipboard.writeText(window.location.href);
-        alert('Tautan video berhasil disalin!');
-      }
-    }
-
-    function downloadVideo() {
-      window.open(SMARTLINK_URL, '_blank');
-    }
-
-    renderCatalog();
+    document.addEventListener("DOMContentLoaded", initGallery);
   </script>
 </body>
 </html>
